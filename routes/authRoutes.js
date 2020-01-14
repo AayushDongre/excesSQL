@@ -106,10 +106,10 @@ router.get('/fetchFacultyList', async (req, res) => {
   const conn = await db();
   try {
     await conn.query('START TRANSACTION');
-    const result = await conn.query('select `Sdrn`, `First_name`, `Last_name` from `faculty`');
+    const result = await conn.query('select `id`, `name` from `users` where `role` in ("faculty", "HOD", "principal")');
     const resp = [];
     for (let i = 0; i < result.length; i += 1) {
-      resp.push({ sdrn: result[i].Sdrn, name: `${result[i].First_name} ${result[i].Last_name}` });
+      resp.push({ sdrn: result[i].Sdrn, name: `${result[i].name}` });
     }
     res.status(200).send(resp);
   } catch (err) {
