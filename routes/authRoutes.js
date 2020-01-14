@@ -65,7 +65,6 @@ router.post('/updateToken', async (req, res) => {
 
     res.status(200).send(result);
   } catch (err) {
-    console.log(err);
     res.status(500).send(err);
   } finally {
     await conn.release();
@@ -76,7 +75,6 @@ router.post('/updateToken', async (req, res) => {
 router.get('/login/:id/:password', async (req, res) => {
   const conn = await db();
   try {
-    console.log(req.query);
     await conn.query('START TRANSACTION');
     const result = await conn.query('select * from `users` where `id` = ?', [req.params.id]);
     if (result[0].password === req.params.password) {
@@ -96,4 +94,31 @@ router.get('/login/:id/:password', async (req, res) => {
   }
 });
 
+/**
+   * Returns an array of faculty details
+   * [[Sdrn1, Name1], [Sdrn2, Name2],  ]
+   * type: GET
+   *
+   * URL: /fetchFacultyList
+   */
+
+router.get('/fetchFacultyList', async (req, res) => {
+  const conn = await db();
+  try {
+    await conn.query('START TRANSACTION');
+    const result = await conn.query('select `Sdrn`, `First_name`, `Last_name` from `faculty`');
+    const resp = [];
+    for (let i = 0; i < result.length; i += 1) {
+      resp.push([result[i].Sdrn, `${result[i].First_name} ${result[i].Last_name}`]);
+    }
+    res.status(200).send(resp);
+  } catch (err) {
+    res.status(500).json({
+      error: err,
+    });
+  } finally {
+    await conn.release();
+    await conn.destroy();
+  }
+});
 module.exports = router;
