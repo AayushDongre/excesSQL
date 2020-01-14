@@ -85,6 +85,8 @@ router.get('/login/:id/:password', async (req, res) => {
   try {
     await conn.query('START TRANSACTION');
     const result = await conn.query('select * from `users` where `id` = ?', [req.params.id]);
+    await conn.query('COMMIT');
+
     if (result[0].password === req.params.password) {
       res.status(200).send(result[0]);
     } else {
@@ -114,10 +116,11 @@ router.get('/fetchFacultyList', async (req, res) => {
   const conn = await db();
   try {
     await conn.query('START TRANSACTION');
-    const result = await conn.query('select `id`, `name` from `users` where `role` in ("faculty", "HOD", "principal")');
+    const result = await conn.query('select `id`, `name` from `users` where role in ("faculty", "HOD", "principal")');
+    await conn.query('COMMIT');
     const resp = [];
     for (let i = 0; i < result.length; i += 1) {
-      resp.push({ sdrn: result[i].Sdrn, name: `${result[i].name}` });
+      resp.push({ sdrn: result[i].id, name: result[i].name });
     }
     res.status(200).send(resp);
   } catch (err) {
