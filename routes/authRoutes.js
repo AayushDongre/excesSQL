@@ -26,8 +26,16 @@ router.post('/createUser', async (req, res) => {
     const name = req.body.name !== null ? req.body.name : '';
     Sender.subscriber(req.body.token, req.body.topics);
     await conn.query('START TRANSACTION');
-    const result = await conn.query('insert into `users` (`id`, `name`,`role`, `password`, `topics`, `token`) VALUES (?, ?, ?, ?, ?, ?)',
-      [req.body.id, name, req.body.role, req.body.password, req.body.topics, req.body.token]);
+    const result = await conn.query('insert into `users` (`id`, `name`,`role`, `email`,`password`, `topics`, `token`) VALUES (?, ?, ?, ?, ?, ?)',
+      [
+        req.body.id,
+        name,
+        req.body.role,
+        req.body.email,
+        req.body.password,
+        req.body.topics,
+        req.body.token,
+      ]);
     await conn.query('COMMIT');
 
     res.status(200).json({
