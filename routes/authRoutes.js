@@ -26,7 +26,7 @@ router.post('/createUser', async (req, res) => {
     const name = req.body.name !== null ? req.body.name : '';
     Sender.subscriber(req.body.token, req.body.topics);
     await conn.query('START TRANSACTION');
-    const result = await conn.query('insert into `users` (`id`, `name`,`role`, `email`,`password`, `topics`, `token`) VALUES (?, ?, ?, ?, ?, ?)',
+    const result = await conn.query('insert into `users` (`id`, `name`,`role`, `email`,`password`, `topics`, `token`) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [
         req.body.id,
         name,
@@ -116,7 +116,7 @@ router.get('/fetchFacultyList', async (req, res) => {
   const conn = await db();
   try {
     await conn.query('START TRANSACTION');
-    const result = await conn.query('select `id`, `name` from `users` where role in ("faculty", "HOD", "principal")');
+    const result = await conn.query('select `id`, `name` from `users` where role in ("faculty", "HOD", "principal", "Admin")');
     await conn.query('COMMIT');
     const resp = [];
     for (let i = 0; i < result.length; i += 1) {
