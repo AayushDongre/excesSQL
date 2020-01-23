@@ -77,7 +77,7 @@ router.post('/message/send/:identification/all', async (req, res) => {
   }
   try {
     const sent = await Sender.sendBatch(req.params.identification, req.body.by, req.body.message);
-
+    console.log(req.body);
     if (sent) {
       await conn.query('START TRANSACTION');
       const result = await conn.query(
@@ -125,7 +125,7 @@ router.post('/message/send/:identification/multiple', async (req, res) => {
       let query = 'insert into `recieved` (`by`, `to`, `message`, `type`, `role`, `identification`) VALUES ';
       for (let i = 0; i < to.length; i += 1) {
         // eslint-disable-next-line no-template-curly-in-string
-        query += `('${req.body.by}', '${to[i]}', '${req.body.message}','multiple', '${req.body.role}','${req.params.identification}'), `;
+        query += `('${req.body.by}', '${to[i]}', '${req.body.message}','multiple', '${req.body.role}','multiple_${req.params.identification}'), `;
       }
       query = query.replace(/,\s*$/, '');
 

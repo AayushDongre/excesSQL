@@ -91,8 +91,8 @@ router.get('/message/fetch/:role/:id/all', async (req, res) => {
   const conn = await db();
   try {
     let who = '';
-    if (req.params.role === 'student') who = 'AS';
-    else if (req.params.role === 'faculty') who = 'AF';
+    if (req.params.role === 'student') who = 'student';
+    else if (req.params.role === 'faculty') who = 'faculty';
 
     await conn.query('START TRANSACTION');
     const resp = await conn.query(
@@ -106,12 +106,12 @@ router.get('/message/fetch/:role/:id/all', async (req, res) => {
       if (i === 0) val += `${topics[i]}`;
       else val += `_${topics[i]}`;
 
-      if (i === topics.length - 1) query += `'${val}'))`;
+      if (i === topics.length - 1) query += `'${val}','all'))`;
       else query += `'${val}',`;
     }
     query += ` or (\`to\` like '${req.params.id}') ORDER by timestamp DESC`;
     if (req.params.role === 'HOD' || req.params.role === 'principal' || req.params.role === 'Admin') query = 'select * from `recieved` ORDER by timestamp DESC';
-
+    console.log(query);
     const result = await conn.query(query);
     res.status(200).json({
       result,
