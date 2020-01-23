@@ -1,10 +1,12 @@
 const express = require('express');
+const otpGenerator = require('otp-generator');
 
 const db = require('../dbConnection');
 const NotificationSender = require('./notificationSender');
 
 const Sender = new NotificationSender();
 const router = express.Router();
+const mailer = require('./mailer');
 
 
 /**
@@ -133,4 +135,43 @@ router.get('/fetchFacultyList', async (req, res) => {
     await conn.destroy();
   }
 });
+
+router.get('/generateOtp', async (req, res) => {
+  try {
+    const otp = otpGenerator.generate(5,
+      {
+        alphabets: false,
+        upperCase: false,
+        specialChars: false,
+      });
+
+    const html = `
+        <html>
+             <body>
+                <p>Your OTP for MYRAIT app is: <h3>${otp}</h3></p>
+            </body>
+        </html>
+    `;
+
+    const mail = {
+      from: 'myraitfeedback@rait.ac.in',
+      to: req.query.email,
+      subject: 'OTP for MYRAIT app',
+      html,
+    };
+    mailer.sendMail(mail, (err) => {
+      res.status(500).json({
+        error: err,
+        message: 'error sending mail',
+      });
+    });
+
+    res.status(200).json({ otp });
+  } catch (err) {
+    res.status(500).json({
+      error: err,
+    });
+  }
+});
+
 module.exports = router;

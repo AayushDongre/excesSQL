@@ -107,3 +107,4 @@ dist
 # custom
 config.js
 firebaseConfig.json
+creds.json
