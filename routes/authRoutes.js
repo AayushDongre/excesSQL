@@ -159,9 +159,10 @@ router.get('/generateOtp', async (req, res) => {
       html,
     };
     mailer.sendMail(mail, (err) => {
-      if (err) {
-        console.log(err);
-      }
+      res.status(500).json({
+        error: err,
+        message: 'error sending mail',
+      });
     });
 
     res.status(200).json({ otp });
