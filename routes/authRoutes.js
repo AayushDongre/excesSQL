@@ -1,4 +1,5 @@
 const express = require('express');
+const otpGenerator = require('otp-generator');
 
 const db = require('../dbConnection');
 const NotificationSender = require('./notificationSender');
@@ -130,6 +131,22 @@ router.get('/fetchFacultyList', async (req, res) => {
   } finally {
     await conn.release();
     await conn.destroy();
+  }
+});
+
+router.get('/generateOtp', async (req, res) => {
+  try {
+    const otp = otpGenerator.generate(5,
+      {
+        alphabets: false,
+        upperCase: false,
+        specialChars: false,
+      });
+    res.status(200).send(otp);
+  } catch (err) {
+    res.status(500).json({
+      error: err,
+    });
   }
 });
 module.exports = router;

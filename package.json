@@ -22,6 +22,7 @@
     "morgan": "~1.9.1",
     "mysql": "^2.17.1",
     "nodemon": "^2.0.2",
+    "otp-generator": "^1.1.0",
     "promise-mysql": "^4.1.1",
     "uglify-js": "2.6.0"
   }
