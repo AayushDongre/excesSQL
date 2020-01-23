@@ -68,7 +68,6 @@ router.post('/updateToken', async (req, res) => {
     await conn.query('START TRANSACTION');
     const old = await conn.query(`select * from \`users\` where \`id\` = '${req.body.id}'`);
     const oldToken = old[0].token;
-    console.log(oldToken);
     Sender.logOut(oldToken);
 
     const result = await conn.query(`update \`users\` set \`token\` = '${req.body.newtoken}' where \`id\` = '${req.body.id}' `);

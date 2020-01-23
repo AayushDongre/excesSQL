@@ -77,7 +77,6 @@ router.post('/message/send/:identification/all', async (req, res) => {
   }
   try {
     const sent = await Sender.sendBatch(req.params.identification, req.body.by, req.body.message);
-    console.log(req.body);
     if (sent) {
       await conn.query('START TRANSACTION');
       const result = await conn.query(

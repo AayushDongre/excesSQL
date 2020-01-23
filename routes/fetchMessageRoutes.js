@@ -111,7 +111,6 @@ router.get('/message/fetch/:role/:id/all', async (req, res) => {
     }
     query += ` or (\`to\` like '${req.params.id}') ORDER by timestamp DESC`;
     if (req.params.role === 'HOD' || req.params.role === 'principal' || req.params.role === 'Admin') query = 'select * from `recieved` ORDER by timestamp DESC';
-    console.log(query);
     const result = await conn.query(query);
     res.status(200).json({
       result,
