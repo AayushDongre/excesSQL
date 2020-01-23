@@ -6,6 +6,7 @@ const NotificationSender = require('./notificationSender');
 
 const Sender = new NotificationSender();
 const router = express.Router();
+const mailer = require('./mailer');
 
 
 /**
@@ -142,11 +143,33 @@ router.get('/generateOtp', async (req, res) => {
         upperCase: false,
         specialChars: false,
       });
-    res.status(200).send(otp);
+
+    const html = `
+        <html>
+             <body>
+                <p>Your OTP for MYRAIT app is: <h3>${otp}</h3></p>
+            </body>
+        </html>
+    `;
+
+    const mail = {
+      from: 'myraitfeedback@rait.ac.in',
+      to: req.query.email,
+      subject: 'OTP for MYRAIT app',
+      html,
+    };
+    mailer.sendMail(mail, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+
+    res.status(200).json({ otp });
   } catch (err) {
     res.status(500).json({
       error: err,
     });
   }
 });
+
 module.exports = router;
